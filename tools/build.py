@@ -206,18 +206,20 @@ def build_theme(v, pal):
     st["editor.diff_hunk.deleted.hollow_background"] = rgb_alpha(deleted, 0x0F)
     st["editor.diff_hunk.deleted.hollow_border"]     = rgb_alpha(deleted, 0x5C)
     st["editor.document_highlight.bracket_background"] = hover2x
-    # indent guides (Nightfox parity: guide == border tone, active brightens)
-    st["editor.indent_guide"]        = base["border"]
-    st["editor.indent_guide_active"] = mix(base["border"], text, 0.35)
+    # indent guides carry the prompt/accent grammar so nesting levels read
+    # scriptwiz: guide = prompt tone (the site's structural-mark green),
+    # active (the level under the cursor) = full accent
+    st["editor.indent_guide"]        = base["prompt"]
+    st["editor.indent_guide_active"] = accent
     st["minimap.thumb.background"]        = rgb_alpha(text, 0x4C)
     st["minimap.thumb.hover_background"]  = rgb_alpha(text, 0x80)
     st["minimap.thumb.active_background"] = rgb_alpha(accent, 0x8C)
     st["minimap.thumb.border"]            = hover2x
     st["pane_group.border"]               = mix(base["border"], editor, 0.5)
-    # panel trees (project/outline/git): dim guides, hover/active brighten
-    st["panel.indent_guide"]        = mix(base["border"], editor, 0.75)
-    st["panel.indent_guide_active"] = mix(base["border"], text, 0.40)
-    st["panel.indent_guide_hover"]  = mix(base["border"], text, 0.25)
+    # panel trees (project/outline/git): prompt-toned guides, accent on active
+    st["panel.indent_guide"]        = mix(base["prompt"], editor, 0.85)
+    st["panel.indent_guide_active"] = accent
+    st["panel.indent_guide_hover"]  = mix(base["prompt"], text, 0.25)
     st["panel.overlay_background"]  = rgb_alpha(bar, 0xE3)
     st["panel.overlay_hover"]       = hover
     st["scrollbar.thumb.active_background"] = rgb_alpha(text, 0x80)
