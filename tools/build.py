@@ -151,6 +151,9 @@ def build_theme(v, pal):
     st["editor.active_wrap_guide"]  = rgb_alpha(text, 0x1A)
     st["editor.document_highlight.read_background"] = rgb_alpha(accent, 0x1A)
     st["editor.document_highlight.write_background"] = rgb_alpha(muted, 0x40)
+    # markdown preview text-selection (md.rs: selection_background_color);
+    # schema-real key one.json omits; accent@3d matches the player selection
+    st["element_selection_background"] = rgb_alpha(cursor, 0x3D)
 
     # --- terminal (variant B = kitty 16 verbatim; exactly the 24 schema keys) ---
     st["terminal.background"]       = editor
@@ -239,7 +242,7 @@ def main():
         apply_appearance(theme["style"], v.get("window", {}).get("appearance", "opaque"))
         family_themes.append(theme)
         doc = {"name": v["name"], "author": pal["meta"]["author"], "themes": [theme]}
-        ALLOWED_UI = REF_UI | {"background.appearance"}
+        ALLOWED_UI = REF_UI | {"background.appearance", "element_selection_background"}
         ui_emitted = set(theme["style"].keys()) - {"syntax"}
         missing = sorted(ALLOWED_UI - ui_emitted)
         extra = sorted(ui_emitted - ALLOWED_UI)

@@ -67,6 +67,7 @@
         "editor.active_wrap_guide": "#e0e0e01a",
         "editor.document_highlight.read_background": "#ff00001a",
         "editor.document_highlight.write_background": "#88888840",
+        "element_selection_background": "#ff00003d",
         "terminal.background": "#00000000",
         "terminal.foreground": "#e0e0e0",
         "terminal.bright_foreground": "#e0e0e0",

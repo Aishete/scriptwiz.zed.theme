@@ -91,7 +91,7 @@ for f in sorted((ROOT / "themes").glob("*.json")) + sorted((ROOT / "builder").gl
     for i, t in enumerate(doc["themes"]):
         style = t["style"]
         ui = set(style.keys()) - {"syntax"}
-        ALLOWED = REF_UI | {"background.appearance"}   # schema-verified extra
+        ALLOWED = REF_UI | {"background.appearance", "element_selection_background"}   # schema-verified extras
         missing, extra = ALLOWED - ui, ui - ALLOWED
         if "background.appearance" in style and style["background.appearance"] not in ("opaque", "transparent", "blurred"):
             print(f"FAIL  {f.name}[{i}]: bad background.appearance {style['background.appearance']!r}")

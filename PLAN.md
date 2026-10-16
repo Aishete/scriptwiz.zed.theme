@@ -99,6 +99,34 @@ Settings patch queued for install time (needs his pick first):
 "active_pane_modifiers": { "border_size": 1.0 }
 ```
 
+Settings patch queued for install time (needs his pick first):
+```json
+"active_pane_modifiers": { "border_size": 1.0 }
+```
+
+## 2d. Markdown preview (crates/markdown/src/markdown.rs, v1.23.2) — fully themed
+
+Every color the preview touches (except the preview fonts, which are settings)
+comes from keys we already emit; verified against `MarkdownStyle::themed_with_overrides`
++ `with_preview_overrides` + `push_markdown_heading/block_quote`:
+
+| preview element | theme key | notes |
+|---|---|---|
+| body text | `text` | |
+| **headings h1–h5** | `text` (preview forces body color; size/semibold + border underline instead) | asymmetry: editor-buffer md headings use syntax `title` = accent |
+| h6 | `text_muted` | |
+| heading underline | `border_variant` | |
+| code block | bg `editor_background` + border `border_variant` + syntax theme | A/B/C: blur alpha 00 → code blocks float over wallpaper blur, contents get our syntax |
+| inline code | `text` on `editor_foreground @ 8%` chip | |
+| links | `text_accent` + accent underline @ 50% | |
+| blockquote body / bar | `text_muted` / `border` | |
+| GFM alerts (Note/Tip/Important/Warning/Caution) | `info / success / warning / error` | tip=green, warning=gold/red, caution=pink/red, note=blue — gallery callout trichotomy |
+| hr rule | `border` | |
+| selection | `element_selection_background` → accent @ 3d | schema key one.json omits; now emitted matching `players[0].selection` |
+| search match in preview | `search_match_background` + active | accent/pink-gold @ 66 |
+
+Preview fonts are SETTINGS, not theme: `"markdown_preview": {"font_size", "font_family", "code_font_family"}` (left untouched — his Caelusevka defaults).
+
 ## 3. Zed key mapping strategy
 
 - Emit the FULL key set of v1.23.2 `one.json` (140 UI + 46 syntax) per theme —
