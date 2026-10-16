@@ -194,6 +194,13 @@ Preview fonts are SETTINGS, not theme: `"markdown_preview": {"font_size", "font_
 - `tools/verify.py` replicates the builder validator + checks key-set equality
   and hex sanity; `tools/build.py` emits per-theme files AND
   `themes/scriptwiz-family.json` (the builder-importable artifact).
+- **Builder round-trip semantics** (verified by diff 2026-10-16): an export
+  from zed.dev/theme-builder is a SNAPSHOT of whatever was imported, at import
+  time. His export equals commit `dee36f5` build 1:1 (139 keys + syntax, zero
+  value changes) minus 41 post-audit keys (blur ladder, accents, vim pills,
+  diff hunks, indent guides…). The builder never re-syncs from disk. Do NOT
+  install builder exports — repo files stay canonical; if a builder tweak is
+  worth keeping, fold the values into palettes.json deliberately.
 - **Dev extension runtime** (installed 2026-10-16):
   `~/.local/share/zed/extensions/installed/scriptwiz-themes` is a SYMLINK to
   this repo — files live-sync, but Zed parses themes into its registry once at
