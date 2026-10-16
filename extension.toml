@@ -4,8 +4,8 @@ version = "0.1.0"
 schema_version = 1
 description = "Terminal-native dark themes from the scriptwiz design language -- the site tokens, the kitty mocha fusion, and the MAGI control room. Dashed-law colors on solid lines, alpha-ladder blur, kitty-verbatim ANSI."
 authors = ["archdev (scriptwiz)"]
-themes = ["themes/scriptwiz.json", "themes/scriptwiz-hazy.json", "themes/scriptwiz-opaque.json", "themes/scriptwiz-mocha.json", "themes/scriptwiz-mocha-hazy.json", "themes/scriptwiz-mocha-opaque.json", "themes/scriptwiz-magi.json", "themes/scriptwiz-magi-hazy.json", "themes/scriptwiz-magi-opaque.json"]
-icon_themes = ["themes/scriptwiz.json", "themes/scriptwiz-hazy.json", "themes/scriptwiz-opaque.json", "themes/scriptwiz-mocha.json", "themes/scriptwiz-mocha-hazy.json", "themes/scriptwiz-mocha-opaque.json", "themes/scriptwiz-magi.json", "themes/scriptwiz-magi-hazy.json", "themes/scriptwiz-magi-opaque.json"]
+themes = ["themes/scriptwiz-light.json", "themes/scriptwiz.json", "themes/scriptwiz-heavy.json", "themes/scriptwiz-hazy.json", "themes/scriptwiz-opaque.json", "themes/scriptwiz-mocha-light.json", "themes/scriptwiz-mocha.json", "themes/scriptwiz-mocha-heavy.json", "themes/scriptwiz-mocha-hazy.json", "themes/scriptwiz-mocha-opaque.json", "themes/scriptwiz-magi-light.json", "themes/scriptwiz-magi.json", "themes/scriptwiz-magi-heavy.json", "themes/scriptwiz-magi-hazy.json", "themes/scriptwiz-magi-opaque.json"]
+icon_themes = ["themes/scriptwiz-light.json", "themes/scriptwiz.json", "themes/scriptwiz-heavy.json", "themes/scriptwiz-hazy.json", "themes/scriptwiz-opaque.json", "themes/scriptwiz-mocha-light.json", "themes/scriptwiz-mocha.json", "themes/scriptwiz-mocha-heavy.json", "themes/scriptwiz-mocha-hazy.json", "themes/scriptwiz-mocha-opaque.json", "themes/scriptwiz-magi-light.json", "themes/scriptwiz-magi.json", "themes/scriptwiz-magi-heavy.json", "themes/scriptwiz-magi-hazy.json", "themes/scriptwiz-magi-opaque.json"]
 languages = []
 capabilities = []
 

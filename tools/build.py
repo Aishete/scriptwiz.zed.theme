@@ -265,20 +265,22 @@ def build_theme(v, pal):
     return {"name": pal["name"], "appearance": "dark", "style": st}, players
 
 def apply_appearance(st, appearance):
-    """Four appearance levels (alphas ported/adapted from 'Duskfox - blurred',
-    nvim-nightfox ext):
-      blurred     — wallpaper lives here, compositor blur: views 00 / chrome E3 / bands 57 / line 36
-      transparent — same ladder, ZERO blur request: wallpaper shows sharp
-      hazy        — a wash, less blur: views 8C / chrome E3 / tab bands 8C / line 57
-      opaque      — solid colors
-    Border lines stay crisp and elevated_surface stays opaque in every level.
-    Schema note: hazy declares the "blurred" enum (no hazy in Zed); transparent
-    declares "transparent"."""
-    LADDER = {"blurred": (0x00, 0x57, 0x36, "blurred"),
-              "transparent": (0x00, 0x57, 0x36, "transparent"),
-              "hazy": (0x8C, 0x8C, 0x57, "blurred"),
-              "opaque": (None, None, None, "opaque")}
-    views, tabs, line, enum_key = LADDER[appearance]
+    """Appearance levels (views / bands / line / chrome alphas + Zed enum).
+    Catppuccin-Blur mechanic: [Light]/[Heavy] are CHROME-opacity tiers of the
+    transparent flavor — editor stays 00, only bars/bands shift along one axis
+    (light = more blur-through, heavy = less bleed):
+      [Light]      views 00 / bands 46 / line 2B / chrome B0 — enum transparent
+      transparent  views 00 / bands 57 / line 36 / chrome E3 — enum transparent
+      [Heavy]      views 00 / bands 80 / line 4D / chrome EE — enum transparent
+      hazy         views 8C / bands 8C / line 57 / chrome E3 — enum blurred
+      opaque       solid — enum opaque
+    Border lines stay crisp; elevated_surface stays opaque in every level."""
+    LADDER = {"light": (0x00, 0x46, 0x2B, 0xB0, "transparent"),
+              "transparent": (0x00, 0x57, 0x36, 0xE3, "transparent"),
+              "heavy": (0x00, 0x80, 0x4D, 0xEE, "transparent"),
+              "hazy": (0x8C, 0x8C, 0x57, 0xE3, "blurred"),
+              "opaque": (None, None, None, None, "opaque")}
+    views, bands, line, chrome, enum_key = LADDER[appearance]
     st["background.appearance"] = enum_key
     if appearance == "opaque":
         return
@@ -290,10 +292,10 @@ def apply_appearance(st, appearance):
         st[k] = a(st[k], views)
     for k in ("background", "title_bar.background", "status_bar.background",
               "surface.background", "editor.subheader.background"):
-        st[k] = a(st[k], 0xE3)
+        st[k] = a(st[k], chrome)
     for k in ("tab_bar.background", "tab.inactive_background",
               "tab.active_background", "toolbar.background"):
-        st[k] = a(st[k], tabs)
+        st[k] = a(st[k], bands)
     st["editor.active_line.background"] = a(st["editor.active_line.background"], line)
 
 
@@ -308,8 +310,11 @@ def main():
         # Appearance family per variant: plain = the variant's window appearance
         # (transparent — zero blur, his settings.dark = "Scriptwis" stays valid),
         # plus hazy and opaque twins.
-        for appearance, suffix in ((v.get("window", {}).get("appearance", "transparent"), ""),
-                                   ("hazy", " - hazy"), ("opaque", " - opaque")):
+        for appearance, suffix in (("light", " [Light]"),
+                                   (v.get("window", {}).get("appearance", "transparent"), ""),
+                                   ("heavy", " [Heavy]"),
+                                   ("hazy", " - hazy"),
+                                   ("opaque", " - opaque")):
             theme, players = build_theme(vid, v)
             theme["style"]["players"] = players
             theme["style"]["accents"] = v.get("accents", [v["base"]["accent"]])
@@ -326,7 +331,8 @@ def main():
                 problems.append(f"{vid}{suffix} missing: UI {missing} SYN {syn_missing}")
             if extra or syn_extra:
                 problems.append(f"{vid}{suffix} extra: UI {extra} SYN {syn_extra}")
-            fname = (theme["name"].lower().replace(" - ", "-").replace(" ", "-") + ".json")
+            fname = (theme["name"].lower().replace(" - ", "-")
+                     .replace("[", "").replace("]", "").replace(" ", "-") + ".json")
             out = ROOT / "themes" / fname
             json.dump(doc, open(out, "w"), indent=2)
             data = out.read_bytes()

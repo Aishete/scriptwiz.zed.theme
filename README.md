@@ -13,16 +13,20 @@ Three variants × three appearance levels — nine themes total:
 | `Scriptwis Mocha` | scriptwiz grammar on your kitty's Catppuccin Mocha base | |
 | `Scriptwis Magi` | NERV control room — red on black | |
 
-Plain names are **transparent**: same see-through ladder the blurred look
-used, but with `background.appearance: "transparent"` — wallpaper shows
-through **sharp**, zero blur requested. Plus `- hazy` (55% wash) and
-`- opaque` (solid) twins per variant:
+Plain names are **transparent**: same see-through ladder, but with
+`background.appearance: "transparent"` — wallpaper shows through **sharp**,
+zero blur requested. Around it, the full intensity set (15 themes):
 
-| flavor | what you see | view-surface alpha | active line | tab bands | chrome | enum |
+| flavor | what you see | views | active line | tab bands | chrome | enum |
 |---|---|---|---|---|---|---|
-| (plain) | wallpaper sharp — zero blur requested | `00` | `36` | `57` | `E3` | transparent |
-| hazy | a readable wash — less blur | `8C` | `57` | `8C` | `E3` | blurred |
-| opaque | solid surfaces | solid | solid | solid | solid | opaque | Popups note: Zed blanks popup backgrounds on
+| `[Light]` | most blur-through — lightest chrome | `00` | `2B` | `46` | `B0` | transparent |
+| (plain) | standard transparent | `00` | `36` | `57` | `E3` | transparent |
+| `[Heavy]` | heaviest translucent chrome — least bleed | `00` | `4D` | `80` | `EE` | transparent |
+| hazy | 55% wash over the wallpaper | `8C` | `57` | `8C` | `E3` | blurred |
+| opaque | solid surfaces | solid | solid | solid | solid | opaque |
+
+The `[Light]`/`[Heavy]` mechanic mirrors Catppuccin Blur: editor stays `00`,
+only the chrome bars slide along one opacity axis. Popups note: Zed blanks popup backgrounds on
 any non-opaque theme, so the `- opaque` twin is the readable-popups escape
 hatch. Flavor switching is instant via the theme selector (`ctrl-k ctrl-t`).
 
