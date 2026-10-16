@@ -106,7 +106,11 @@ def build_theme(v, pal):
     # --- text + icons ---
     st["text"]                      = text
     st["text.muted"]                = muted
-    st["text.placeholder"]          = muted
+    # breadcrumb chevron separators render Color::Placeholder (editor/element.rs
+    # render_breadcrumb_text: Label::new("›").color(Color::Placeholder)) — accent
+    # keeps the folder-level path reading scriptwiz; input placeholders inherit
+    # it too (same voice as the site's · separators)
+    st["text.placeholder"]          = accent
     st["text.disabled"]             = muted
     st["text.accent"]               = accent
     st["icon"]                      = text

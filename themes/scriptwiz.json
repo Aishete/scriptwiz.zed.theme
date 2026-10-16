@@ -28,7 +28,7 @@
         "drop_target.background": "#9dc34f50",
         "text": "#c1c1c5",
         "text.muted": "#59596d",
-        "text.placeholder": "#59596d",
+        "text.placeholder": "#9dc34f",
         "text.disabled": "#59596d",
         "text.accent": "#9dc34f",
         "icon": "#c1c1c5",
