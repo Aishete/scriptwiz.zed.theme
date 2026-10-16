@@ -51,6 +51,7 @@
       },
       "git": { "created": "#9dc34f", "modified": "#92b159", "deleted": "#cb3d96" },
       "info": "#446f84",
+      "accents": ["#9dc34f", "#446f84", "#cb3d96", "#92b159"],
       "terminal": { "fg": "#c1c1c5", "bright_fg": "#c1c1c5" }
     },
     "B": {
@@ -95,6 +96,7 @@
       },
       "git": { "created": "#a6e3a1", "modified": "#f9e2af", "deleted": "#f38ba8" },
       "info": "#89b4fa",
+      "accents": ["#9dc34f", "#446f84", "#cb3d96", "#92b159"],
       "terminal": { "fg": "#CDD6F4", "bright_fg": "#CDD6F4" }
     },
     "C": {
@@ -138,6 +140,7 @@
       },
       "git": { "created": "#997a00", "modified": "#ffd700", "deleted": "#ff6666" },
       "info": "#663399",
+      "accents": ["#ff0000", "#663399", "#ffd700", "#ff6666"],
       "terminal": { "fg": "#e0e0e0", "bright_fg": "#e0e0e0" }
     }
   }

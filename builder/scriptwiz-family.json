@@ -441,6 +441,12 @@
             "selection": "#446f843d"
           }
         ],
+        "accents": [
+          "#9dc34f",
+          "#446f84",
+          "#cb3d96",
+          "#92b159"
+        ],
         "background.appearance": "blurred"
       }
     },
@@ -883,6 +889,12 @@
             "selection": "#446f843d"
           }
         ],
+        "accents": [
+          "#9dc34f",
+          "#446f84",
+          "#cb3d96",
+          "#92b159"
+        ],
         "background.appearance": "blurred"
       }
     },
@@ -1324,6 +1336,12 @@
             "background": "#663399",
             "selection": "#6633993d"
           }
+        ],
+        "accents": [
+          "#ff0000",
+          "#663399",
+          "#ffd700",
+          "#ff6666"
         ],
         "background.appearance": "blurred"
       }

@@ -293,10 +293,11 @@ def main():
     SCHEMA_KEYS = set(json.load(open(ROOT / "tools" / "schema-color-keys.json")))
     LEGACY = {"scrollbar_thumb.background", "version_control_conflict_ours_background",
               "version_control_conflict_theirs_background"}
-    ALLOWED_UI = (SCHEMA_KEYS - LEGACY) | {"players"}
+    ALLOWED_UI = (SCHEMA_KEYS - LEGACY) | {"players", "accents"}
     for vid, v in pal["variants"].items():
         theme, players = build_theme(vid, v)
         theme["style"]["players"] = players
+        theme["style"]["accents"] = v.get("accents", [v["base"]["accent"]])
         apply_appearance(theme["style"], v.get("window", {}).get("appearance", "opaque"))
         family_themes.append(theme)
         doc = {"name": v["name"], "author": pal["meta"]["author"], "themes": [theme]}

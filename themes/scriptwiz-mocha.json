@@ -441,6 +441,12 @@
             "selection": "#446f843d"
           }
         ],
+        "accents": [
+          "#9dc34f",
+          "#446f84",
+          "#cb3d96",
+          "#92b159"
+        ],
         "background.appearance": "blurred"
       }
     }

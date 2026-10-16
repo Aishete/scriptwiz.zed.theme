@@ -94,7 +94,7 @@ for f in sorted((ROOT / "themes").glob("*.json")) + sorted((ROOT / "builder").gl
     for i, t in enumerate(doc["themes"]):
         style = t["style"]
         ui = set(style.keys()) - {"syntax"}
-        ALLOWED = SCHEMA_KEYS - LEGACY_NAMES | {"players"}   # full v1.23.2 schema colors
+        ALLOWED = SCHEMA_KEYS - LEGACY_NAMES | {"players", "accents"}   # schema colors + struct lists
         missing, extra = ALLOWED - ui, ui - ALLOWED
         not_in_schema = sorted(extra)
         if not_in_schema:
