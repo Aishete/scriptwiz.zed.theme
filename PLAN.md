@@ -76,9 +76,15 @@ no longer exists in v1.23.2 settings). Ladder ported verbatim by role:
 | elevated surfaces | opaque | elevated_surface (modals must occlude) |
 | lines / focused borders / search | keep | crisp lines over blur, per the gallery |
 
-`window.appearance` per variant in palettes.json (flip to `"opaque"` to emit
-solid variants; Nightfox ships -opaque/-blurred pairs — we can emit pairs too
-if wanted).
+`window.appearance` per variant in palettes.json drives the alpha ladder.
+
+**O2 twins (2026-10-16):** each variant emits BOTH forms Nightfox-style:
+plain name = blurred (his `settings.dark` stays valid) + `"<name> - opaque"
+twin with solid colors and an explicit `"background.appearance": "opaque"`.
+Manifest lists 6 files; family file = 6 themes. Rationale: Zed blanks popup
+containers (`theme_is_transparent` in ui/styles/appearance.rs matches
+Blurred), so the opaque twin is the readable-popup escape hatch — same
+rollback pattern as `Duskfox - opaque/-blurred`.
 
 ## 2c. Style capability matrix (v1.23.2, verified in source 2026-10-16)
 
@@ -206,9 +212,12 @@ zed-theme/
 ├── palettes.json                ← single source of truth for all three variant tables
 ├── PLAN.md
 ├── themes/                      ← exactly what the manifest lists / what installs
-│   ├── scriptwiz.json
-│   ├── scriptwiz-mocha.json
-│   └── scriptwiz-magi.json
+│   ├── scriptwiz.json           (blurred)
+│   ├── scriptwiz-mocha.json     (blurred)
+│   ├── scriptwiz-magi.json      (blurred)
+│   ├── scriptwiz-opaque.json    (solid twin)
+│   ├── scriptwiz-mocha-opaque.json
+│   └── scriptwiz-magi-opaque.json
 ├── builder/
 │   └── scriptwiz-family.json    ← all three in one family; drag into zed.dev/theme-builder
 │                                  (kept OUT of themes/ so packaging never double-loads)

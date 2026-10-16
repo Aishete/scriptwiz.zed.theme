@@ -268,10 +268,11 @@ def apply_appearance(st, appearance):
     """Alpha ladder ported from 'Duskfox - blurred' (nvim-nightfox ext, the theme
     he runs today): view surfaces 00, chrome/bars E3, tab bands 57, active line
     36. Border/separator lines stay crisp; elevated_surface stays opaque so
-    modals occlude. Opaque = no-op (plain solid colors as built)."""
+    modals occlude. Blurred twin gets the ladder + key; opaque twin gets solid
+    colors + an explicit "opaque" key (Nightfox-family convention)."""
+    st["background.appearance"] = appearance
     if appearance == "opaque":
         return
-    st["background.appearance"] = appearance
     def a(color, alpha):
         return "%s%02x" % (color[:7], alpha)
     for k in ("editor.background", "editor.gutter.background",
@@ -295,27 +296,32 @@ def main():
               "version_control_conflict_theirs_background"}
     ALLOWED_UI = (SCHEMA_KEYS - LEGACY) | {"players", "accents"}
     for vid, v in pal["variants"].items():
-        theme, players = build_theme(vid, v)
-        theme["style"]["players"] = players
-        theme["style"]["accents"] = v.get("accents", [v["base"]["accent"]])
-        apply_appearance(theme["style"], v.get("window", {}).get("appearance", "opaque"))
-        family_themes.append(theme)
-        doc = {"name": v["name"], "author": pal["meta"]["author"], "themes": [theme]}
-        ui_emitted = set(theme["style"].keys()) - {"syntax"}
-        missing = sorted(ALLOWED_UI - ui_emitted)
-        extra = sorted(ui_emitted - ALLOWED_UI)
-        syn_emitted = set(theme["style"]["syntax"].keys())
-        syn_missing = sorted(REF_SYN - syn_emitted); syn_extra = sorted(syn_emitted - REF_SYN)
-        if missing or syn_missing:
-            problems.append(f"{vid} missing: UI {missing} SYN {syn_missing}")
-        if extra or syn_extra:
-            problems.append(f"{vid} extra (NOT in v1.23.2): UI {extra} SYN {syn_extra}")
-        fname = v["name"].lower().replace(" ", "-") + ".json"
-        out = ROOT / "themes" / fname
-        json.dump(doc, open(out, "w"), indent=2)
-        data = out.read_bytes()
-        print(f"{out.relative_to(ROOT)}  {len(data):6d}B  sha256 {hashlib.sha256(data).hexdigest()[:16]}…"
-              f"  ui={len(ui_emitted)} syn={len(syn_emitted)} players=3")
+        # Opaque/blurred twins per variant (Nightfox-family convention). The plain
+        # name keeps the blurred look (his settings.dark = "Scriptwis" stays valid).
+        for appearance, suffix in ((v.get("window", {}).get("appearance", "opaque"), ""),
+                                   ("opaque", " - opaque")):
+            theme, players = build_theme(vid, v)
+            theme["style"]["players"] = players
+            theme["style"]["accents"] = v.get("accents", [v["base"]["accent"]])
+            apply_appearance(theme["style"], appearance)
+            theme["name"] = v["name"] + suffix
+            family_themes.append(theme)
+            doc = {"name": theme["name"], "author": pal["meta"]["author"], "themes": [theme]}
+            ui_emitted = set(theme["style"].keys()) - {"syntax"}
+            missing = sorted(ALLOWED_UI - ui_emitted)
+            extra = sorted(ui_emitted - ALLOWED_UI)
+            syn_emitted = set(theme["style"]["syntax"].keys())
+            syn_missing = sorted(REF_SYN - syn_emitted); syn_extra = sorted(syn_emitted - REF_SYN)
+            if missing or syn_missing:
+                problems.append(f"{vid}{suffix} missing: UI {missing} SYN {syn_missing}")
+            if extra or syn_extra:
+                problems.append(f"{vid}{suffix} extra: UI {extra} SYN {syn_extra}")
+            fname = (theme["name"].lower().replace(" - ", "-").replace(" ", "-") + ".json")
+            out = ROOT / "themes" / fname
+            json.dump(doc, open(out, "w"), indent=2)
+            data = out.read_bytes()
+            print(f"{out.relative_to(ROOT)}  {len(data):6d}B  sha256 {hashlib.sha256(data).hexdigest()[:16]}\u2026"
+                  f"  ui={len(ui_emitted)} syn={len(syn_emitted)} players=3 accents={len(theme['style']['accents'])} [{appearance}]")
     if problems:
         print("PROBLEMS:"); [print(" -", p) for p in problems]; sys.exit(1)
     fam = {"name": "Scriptwiz", "author": pal["meta"]["author"], "themes": family_themes}
