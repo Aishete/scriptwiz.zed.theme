@@ -122,7 +122,7 @@
         "minimap.thumb.active_background": "#ff00008c",
         "minimap.thumb.border": "#e0e0e01e",
         "pane_group.border": "#0d0000",
-        "panel.indent_guide": "#d95757",
+        "panel.indent_guide": "#ff6666",
         "panel.indent_guide_active": "#ff0000",
         "panel.indent_guide_hover": "#e8c2c2",
         "panel.overlay_background": "#101010e3",

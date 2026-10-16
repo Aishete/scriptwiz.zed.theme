@@ -216,8 +216,9 @@ def build_theme(v, pal):
     st["minimap.thumb.active_background"] = rgb_alpha(accent, 0x8C)
     st["minimap.thumb.border"]            = hover2x
     st["pane_group.border"]               = mix(base["border"], editor, 0.5)
-    # panel trees (project/outline/git): prompt-toned guides, accent on active
-    st["panel.indent_guide"]        = mix(base["prompt"], editor, 0.85)
+    # panel trees (project/outline/git): full prompt tone, accent on active —
+    # he reported the earlier 85%-dulled base as "not green"
+    st["panel.indent_guide"]        = base["prompt"]
     st["panel.indent_guide_active"] = accent
     st["panel.indent_guide_hover"]  = mix(base["prompt"], text, 0.25)
     st["panel.overlay_background"]  = rgb_alpha(bar, 0xE3)
