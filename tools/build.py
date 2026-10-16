@@ -180,7 +180,10 @@ def build_theme(v, pal):
         ("success", base["success"]), ("warning", base["warning"]),
         ("info", pal.get("info", blue)),
     ]
-    families.append(("hint", syn.get("hint", muted)))
+    # git blame paints with status().hint (git_ui/blame_ui.rs, gutter + inline);
+    # he wants blame in the active/highlight color per variant. syntax.hint stays
+    # muted so hint-severity diagnostics (which prefer syntax.hint) keep their look.
+    families.append(("hint", accent))
     families.append(("unreachable", muted))
     for name, color in families:
         t = status_triple(color, editor)
