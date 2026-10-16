@@ -12,6 +12,7 @@
   "variants": {
     "A": {
       "name": "Scriptwiz",
+      "window": { "appearance": "blurred" },
       "base": {
         "editor_bg": "#0a0a17", "panel_bg": "#0d0d1f", "bar_bg": "#101024",
         "chrome_bg": "#101024", "surface": "#0d0d1f", "hover": "rgba(193,193,197,0.06)",
@@ -54,6 +55,7 @@
     },
     "B": {
       "name": "Scriptwiz Mocha",
+      "window": { "appearance": "blurred" },
       "base": {
         "editor_bg": "#1e1e2e", "panel_bg": "#181825", "bar_bg": "#11111b",
         "chrome_bg": "#181825", "surface": "#313244", "hover": "rgba(205,214,244,0.06)",
@@ -97,6 +99,7 @@
     },
     "C": {
       "name": "Scriptwiz Magi",
+      "window": { "appearance": "blurred" },
       "base": {
         "editor_bg": "#000000", "panel_bg": "#0a0a0a", "bar_bg": "#101010",
         "chrome_bg": "#0a0a0a", "surface": "#101010", "hover": "rgba(224,224,224,0.06)",

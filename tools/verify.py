@@ -60,7 +60,12 @@ for f in sorted((ROOT / "themes").glob("*.json")):
     for i, t in enumerate(doc["themes"]):
         style = t["style"]
         ui = set(style.keys()) - {"syntax"}
-        missing, extra = REF_UI - ui, ui - REF_UI
+        ALLOWED = REF_UI | {"background.appearance"}   # schema-verified extra
+        missing, extra = ALLOWED - ui, ui - ALLOWED
+        if "background.appearance" in style and style["background.appearance"] not in ("opaque", "transparent", "blurred"):
+            print(f"FAIL  {f.name}[{i}]: bad background.appearance {style['background.appearance']!r}")
+            problems.append(f.name)
+            continue
         syn = set(style["syntax"].keys())
         syn_missing, syn_extra = REF_SYN - syn, syn - REF_SYN
         bad_ansi = {k for k in ui if k.startswith("terminal.ansi.")} - ANSI_SCHEMA
@@ -75,6 +80,8 @@ for f in sorted((ROOT / "themes").glob("*.json")):
         def walk(v, path=""):
             if path.split(".")[-1] in ("font_style", "font_weight"):
                 return  # enum fields, not colors
+            if path == "background.appearance":
+                return  # enum field, not a color
             if isinstance(v, str):
                 if re.fullmatch(r"#([0-9a-fA-F]{6})([0-9a-fA-F]{2})?", v) is None:
                     bad_hex.append(path)

@@ -38,9 +38,41 @@ pick → build → install → verify).
 | git | created `#9dc34f` · modified `#92b159` · deleted `#cb3d96` | created `#a6e3a1` · modified `#f9e2af` · deleted `#f38ba8` | created `#997a00` · modified `#ffd700` · deleted `#ff6666` |
 | borders | `#3a3a55` (blueDim) · focused `#9dc34f` · selected `#446f84` | `#3a3a55` on mocha → `#585b70`-family blend · focused `#9dc34f` · selected `#446f84` | `#1a0000` · focused `#ff0000` · selected `#663399` |
 
-Dashed law (DESIGN §5) cannot render in Zed (it draws solid borders) — carried
-instead as the *color grammar*: dim structure lines, green focused borders,
-blue selected, pink delete/errors, gold/red warning per variant.
+Dashed law (DESIGN §5) cannot render in Zed — the v1.23.2 theme schema has no
+border-style key (verified: 1526 lines, color fields only). Border COLOR GRAMMAR
+carries instead: dim structural lines, green focused, blue selected, pink/gold
+warnings, and focused borders snap to accent like the gallery's dashed-green
+separators. The dashed voice stays in the HTML preview and the site; in Zed the
+lines are solid but hold the same tokens.
+
+Border map (gallery → Zed):
+
+| gallery token | Zed keys |
+|---|---|
+| `--t-line` / `--t-border` (card/box edges) | `border`, `border.variant` (50% dim), `border.disabled` (75% dim) |
+| green dashed card-header separators (`--t-accent`) | `border.focused`, `panel.focused_border`, `pane.focused_border` |
+| `--t-blue` pill borders | `border.selected` |
+| traffic dots / spinner solids | n/a (mockup-only; Zed has no dots) |
+
+## 2b. Transparency — ported from the running theme
+
+He currently runs **`Duskfox - blurred`** (nvim-nightfox ext). That theme does
+blurring with NO user setting: `background.appearance: "blurred"` + a themed
+alpha ladder over an otherwise identical key set (`window_background_opacity`
+no longer exists in v1.23.2 settings). Ladder ported verbatim by role:
+
+| role | alpha | keys |
+|---|---|---|
+| view surfaces | `00` | editor, gutter, terminal, panel backgrounds |
+| chrome / bars | `E3` | background, title/status bar, surface, subheader |
+| tab bands | `57` | tab_bar, tab inactive/active, toolbar |
+| active line | `36` | editor.active_line |
+| elevated surfaces | opaque | elevated_surface (modals must occlude) |
+| lines / focused borders / search | keep | crisp lines over blur, per the gallery |
+
+`window.appearance` per variant in palettes.json (flip to `"opaque"` to emit
+solid variants; Nightfox ships -opaque/-blurred pairs — we can emit pairs too
+if wanted).
 
 ## 3. Zed key mapping strategy
 

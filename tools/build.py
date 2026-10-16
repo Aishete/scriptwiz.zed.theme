@@ -205,17 +205,41 @@ def build_theme(v, pal):
 
     return {"name": pal["name"], "appearance": "dark", "style": st}, players
 
+def apply_appearance(st, appearance):
+    """Alpha ladder ported from 'Duskfox - blurred' (nvim-nightfox ext, the theme
+    he runs today): view surfaces 00, chrome/bars E3, tab bands 57, active line
+    36. Border/separator lines stay crisp; elevated_surface stays opaque so
+    modals occlude. Opaque = no-op (plain solid colors as built)."""
+    if appearance == "opaque":
+        return
+    st["background.appearance"] = appearance
+    def a(color, alpha):
+        return "%s%02x" % (color[:7], alpha)
+    for k in ("editor.background", "editor.gutter.background",
+              "terminal.background", "panel.background"):
+        st[k] = a(st[k], 0x00)
+    for k in ("background", "title_bar.background", "status_bar.background",
+              "surface.background", "editor.subheader.background"):
+        st[k] = a(st[k], 0xE3)
+    for k in ("tab_bar.background", "tab.inactive_background",
+              "tab.active_background", "toolbar.background"):
+        st[k] = a(st[k], 0x57)
+    st["editor.active_line.background"] = a(st["editor.active_line.background"], 0x36)
+
+
 def main():
     pal = json.load(open(ROOT / "palettes.json"))
     problems, family_themes = [], []
     for vid, v in pal["variants"].items():
         theme, players = build_theme(vid, v)
         theme["style"]["players"] = players
+        apply_appearance(theme["style"], v.get("window", {}).get("appearance", "opaque"))
         family_themes.append(theme)
         doc = {"name": v["name"], "author": pal["meta"]["author"], "themes": [theme]}
+        ALLOWED_UI = REF_UI | {"background.appearance"}
         ui_emitted = set(theme["style"].keys()) - {"syntax"}
-        missing = sorted(REF_UI - ui_emitted)
-        extra = sorted(ui_emitted - REF_UI)
+        missing = sorted(ALLOWED_UI - ui_emitted)
+        extra = sorted(ui_emitted - ALLOWED_UI)
         syn_emitted = set(theme["style"]["syntax"].keys())
         syn_missing = sorted(REF_SYN - syn_emitted); syn_extra = sorted(syn_emitted - REF_SYN)
         if missing or syn_missing:
