@@ -5,7 +5,7 @@ Terminal-native dark themes for [Zed](https://zed.dev) — built from the
 the accent, dashed-law colors on solid lines, and an editor that reads like a
 shell session.
 
-Three variants × four appearance levels — twelve themes total:
+Three variants × three appearance levels — nine themes total:
 
 | Variant | Soul | |
 |---|---|---|
@@ -13,20 +13,16 @@ Three variants × four appearance levels — twelve themes total:
 | `Scriptwis Mocha` | scriptwiz grammar on your kitty's Catppuccin Mocha base | |
 | `Scriptwis Magi` | NERV control room — red on black | |
 
-Every variant ships in `blurred`, `transparent`, `hazy`, and `opaque` flavors
-(`Scriptwis`, `Scriptwis - transparent`, `Scriptwis - hazy`,
-`Scriptwis - opaque`, …):
+Plain names are **transparent**: same see-through ladder the blurred look
+used, but with `background.appearance: "transparent"` — wallpaper shows
+through **sharp**, zero blur requested. Plus `- hazy` (55% wash) and
+`- opaque` (solid) twins per variant:
 
 | flavor | what you see | view-surface alpha | active line | tab bands | chrome | enum |
 |---|---|---|---|---|---|---|
-| blurred | wallpaper + compositor blur | `00` | `36` | `57` | `E3` | blurred |
-| transparent | wallpaper sharp — zero blur requested | `00` | `36` | `57` | `E3` | transparent |
+| (plain) | wallpaper sharp — zero blur requested | `00` | `36` | `57` | `E3` | transparent |
 | hazy | a readable wash — less blur | `8C` | `57` | `8C` | `E3` | blurred |
-| opaque | solid surfaces | solid | solid | solid | solid | opaque |
-
-Hyprland note: if a `blur` window rule matches the `zeditor` class, the
-compositor may still blur translucent windows — that rule lives in your
-hyprland config, not the theme. Popups note: Zed blanks popup backgrounds on
+| opaque | solid surfaces | solid | solid | solid | solid | opaque | Popups note: Zed blanks popup backgrounds on
 any non-opaque theme, so the `- opaque` twin is the readable-popups escape
 hatch. Flavor switching is instant via the theme selector (`ctrl-k ctrl-t`).
 

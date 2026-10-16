@@ -447,7 +447,7 @@
           "#ffd700",
           "#ff6666"
         ],
-        "background.appearance": "blurred"
+        "background.appearance": "transparent"
       }
     }
   ]

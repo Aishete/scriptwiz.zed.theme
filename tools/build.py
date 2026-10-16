@@ -305,10 +305,10 @@ def main():
               "version_control_conflict_theirs_background"}
     ALLOWED_UI = (SCHEMA_KEYS - LEGACY) | {"players", "accents"}
     for vid, v in pal["variants"].items():
-        # Appearance family per variant (Nightfox convention): plain = blurred
-        # ladder (his settings.dark = "Scriptwis" stays valid), plus hazy and
-        # opaque twins.
-        for appearance, suffix in (("blurred", ""), ("transparent", " - transparent"),
+        # Appearance family per variant: plain = the variant's window appearance
+        # (transparent — zero blur, his settings.dark = "Scriptwis" stays valid),
+        # plus hazy and opaque twins.
+        for appearance, suffix in ((v.get("window", {}).get("appearance", "transparent"), ""),
                                    ("hazy", " - hazy"), ("opaque", " - opaque")):
             theme, players = build_theme(vid, v)
             theme["style"]["players"] = players

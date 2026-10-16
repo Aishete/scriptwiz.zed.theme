@@ -447,7 +447,7 @@
           "#cb3d96",
           "#92b159"
         ],
-        "background.appearance": "blurred"
+        "background.appearance": "transparent"
       }
     }
   ]
