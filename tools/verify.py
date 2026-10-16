@@ -12,6 +12,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 REF = json.load(open(ROOT / "tools" / "one-v1.23.2.json"))
+SCHEMA_KEYS = set(json.load(open(ROOT / "tools" / "schema-color-keys.json")))
+LEGACY_NAMES = {"scrollbar_thumb.background", "version_control_conflict_ours_background",
+                "version_control_conflict_theirs_background"}
 STYLE = REF["themes"][0]["style"]
 REF_UI = set(k for k in STYLE if k != "syntax")          # includes players
 REF_SYN = set(STYLE["syntax"].keys())
@@ -91,17 +94,24 @@ for f in sorted((ROOT / "themes").glob("*.json")) + sorted((ROOT / "builder").gl
     for i, t in enumerate(doc["themes"]):
         style = t["style"]
         ui = set(style.keys()) - {"syntax"}
-        ALLOWED = REF_UI | {"background.appearance", "element_selection_background"}   # schema-verified extras
+        ALLOWED = SCHEMA_KEYS - LEGACY_NAMES | {"players"}   # full v1.23.2 schema colors
         missing, extra = ALLOWED - ui, ui - ALLOWED
+        not_in_schema = sorted(extra)
+        if not_in_schema:
+            print(f"FAIL  {f.name}[{i}]: keys not in schema: {not_in_schema}")
+            problems.append(f.name)
+            continue
         if "background.appearance" in style and style["background.appearance"] not in ("opaque", "transparent", "blurred"):
             print(f"FAIL  {f.name}[{i}]: bad background.appearance {style['background.appearance']!r}")
             problems.append(f.name)
             continue
         syn = set(style["syntax"].keys())
         syn_missing, syn_extra = REF_SYN - syn, syn - REF_SYN
-        bad_ansi = {k for k in ui if k.startswith("terminal.ansi.")} - ANSI_SCHEMA
-        if missing or syn_missing or bad_ansi:
-            print(f"FAIL  {f.name}[{i}]: missing={sorted(missing)} syn={sorted(syn_missing)} bad_ansi={sorted(bad_ansi)}")
+        bad_ansi = {k for k in ui if k.startswith("terminal.ansi.") and k != "terminal.ansi.background"} - ANSI_SCHEMA
+        if bad_ansi:
+            print(f"FAIL  {f.name}[{i}]: bad_ansi {sorted(bad_ansi)}"); problems.append(f.name)
+        if missing or syn_missing:
+            print(f"FAIL  {f.name}[{i}]: missing={len(missing)} {sorted(missing)[:8]} syn={sorted(syn_missing)}")
             problems.append(f.name)
         if extra or syn_extra:
             print(f"FAIL  {f.name}[{i}]: extra={sorted(extra)} syn_extra={sorted(syn_extra)}")

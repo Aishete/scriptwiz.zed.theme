@@ -153,7 +153,7 @@ def build_theme(v, pal):
     st["editor.document_highlight.write_background"] = rgb_alpha(muted, 0x40)
     # markdown preview text-selection (md.rs: selection_background_color);
     # schema-real key one.json omits; accent@3d matches the player selection
-    st["element_selection_background"] = rgb_alpha(cursor, 0x3D)
+    st["element.selection_background"] = rgb_alpha(cursor, 0x3D)
 
     # --- terminal (variant B = kitty 16 verbatim; exactly the 24 schema keys) ---
     st["terminal.background"]       = editor
@@ -164,7 +164,6 @@ def build_theme(v, pal):
         st[f"terminal.ansi.{name}"] = val
         st[f"terminal.ansi.bright_{name}"] = pal["ansi"].get(f"bright_{name}", val)
         st[f"terminal.ansi.dim_{name}"] = dim(val, editor)
-
     st["link_text.hover"] = accent
 
     # --- vcs + status families ---
@@ -188,6 +187,60 @@ def build_theme(v, pal):
     # muted so hint-severity diagnostics (which prefer syntax.hint) keep their look.
     families.append(("hint", accent))
     families.append(("unreachable", muted))
+
+    # --- schema-complete extras: v1.23.2 fields one.json never sets ---
+    st["debugger.accent"]             = accent
+    st["drop_target.border"]          = rgb_alpha(accent, 0x66)
+    st["editor.code_lens.foreground"] = muted
+    st["editor.debugger_active_line.background"] = rgb_alpha(base["warning"], 0x36)
+    # diff hunks mirror Zed's own fallback alphas (settings_content dark constants:
+    # filled .12 / hollow bg .06 / hollow border .36)
+    st["editor.diff_hunk.added.background"]        = rgb_alpha(created, 0x1F)
+    st["editor.diff_hunk.added.hollow_background"] = rgb_alpha(created, 0x0F)
+    st["editor.diff_hunk.added.hollow_border"]     = rgb_alpha(created, 0x5C)
+    st["editor.diff_hunk.deleted.background"]        = rgb_alpha(deleted, 0x1F)
+    st["editor.diff_hunk.deleted.hollow_background"] = rgb_alpha(deleted, 0x0F)
+    st["editor.diff_hunk.deleted.hollow_border"]     = rgb_alpha(deleted, 0x5C)
+    st["editor.document_highlight.bracket_background"] = hover2x
+    # indent guides (Nightfox parity: guide == border tone, active brightens)
+    st["editor.indent_guide"]        = base["border"]
+    st["editor.indent_guide_active"] = mix(base["border"], text, 0.35)
+    st["minimap.thumb.background"]        = rgb_alpha(text, 0x4C)
+    st["minimap.thumb.hover_background"]  = rgb_alpha(text, 0x80)
+    st["minimap.thumb.active_background"] = rgb_alpha(accent, 0x8C)
+    st["minimap.thumb.border"]            = hover2x
+    st["pane_group.border"]               = mix(base["border"], editor, 0.5)
+    # panel trees (project/outline/git): dim guides, hover/active brighten
+    st["panel.indent_guide"]        = mix(base["border"], editor, 0.75)
+    st["panel.indent_guide_active"] = mix(base["border"], text, 0.40)
+    st["panel.indent_guide_hover"]  = mix(base["border"], text, 0.25)
+    st["panel.overlay_background"]  = rgb_alpha(bar, 0xE3)
+    st["panel.overlay_hover"]       = hover
+    st["scrollbar.thumb.active_background"] = rgb_alpha(text, 0x80)
+    st["terminal.ansi.background"]  = editor
+    st["version_control.conflict"]  = base["warning"]
+    st["version_control.ignored"]   = muted
+    st["version_control.renamed"]   = pal.get("info", blue)
+    # vim status pills (his vim_mode=true): bg = mode color, fg = bar tone
+    st["vim.normal.background"] = accent
+    st["vim.normal.foreground"] = bar
+    st["vim.insert.background"] = blue
+    st["vim.insert.foreground"] = bar
+    st["vim.replace.background"] = base["warning"]
+    st["vim.replace.foreground"] = bar
+    st["vim.visual.background"] = pink
+    st["vim.visual.foreground"] = bar
+    st["vim.visual_line.background"] = pink
+    st["vim.visual_line.foreground"] = bar
+    st["vim.visual_block.background"] = pink
+    st["vim.visual_block.foreground"] = bar
+    st["vim.yank.background"] = rgb_alpha(accent, 0x33)
+    # helix mode family (same voices; he runs vim mode, helix off)
+    st["vim.helix_normal.background"] = accent
+    st["vim.helix_normal.foreground"] = bar
+    st["vim.helix_select.background"] = pink
+    st["vim.helix_select.foreground"] = bar
+    st["vim.helix_jump_label.foreground"] = accent
     for name, color in families:
         t = status_triple(color, editor)
         st[name] = t["base"]; st[f"{name}.background"] = t["background"]; st[f"{name}.border"] = t["border"]
@@ -222,7 +275,8 @@ def apply_appearance(st, appearance):
     def a(color, alpha):
         return "%s%02x" % (color[:7], alpha)
     for k in ("editor.background", "editor.gutter.background",
-              "terminal.background", "panel.background"):
+              "terminal.background", "panel.background",
+              "terminal.ansi.background"):
         st[k] = a(st[k], 0x00)
     for k in ("background", "title_bar.background", "status_bar.background",
               "surface.background", "editor.subheader.background"):
@@ -236,13 +290,16 @@ def apply_appearance(st, appearance):
 def main():
     pal = json.load(open(ROOT / "palettes.json"))
     problems, family_themes = [], []
+    SCHEMA_KEYS = set(json.load(open(ROOT / "tools" / "schema-color-keys.json")))
+    LEGACY = {"scrollbar_thumb.background", "version_control_conflict_ours_background",
+              "version_control_conflict_theirs_background"}
+    ALLOWED_UI = (SCHEMA_KEYS - LEGACY) | {"players"}
     for vid, v in pal["variants"].items():
         theme, players = build_theme(vid, v)
         theme["style"]["players"] = players
         apply_appearance(theme["style"], v.get("window", {}).get("appearance", "opaque"))
         family_themes.append(theme)
         doc = {"name": v["name"], "author": pal["meta"]["author"], "themes": [theme]}
-        ALLOWED_UI = REF_UI | {"background.appearance", "element_selection_background"}
         ui_emitted = set(theme["style"].keys()) - {"syntax"}
         missing = sorted(ALLOWED_UI - ui_emitted)
         extra = sorted(ui_emitted - ALLOWED_UI)
@@ -268,7 +325,7 @@ def main():
     data = fout.read_bytes()
     print(f"{fout.relative_to(ROOT)}  {len(data):6d}B  sha256 {hashlib.sha256(data).hexdigest()[:16]}…  "
           f"family with {len(family_themes)} themes (builder-importable)")
-    print("ALL KEY SETS == v1.23.2 one.json reference: PASS")
+    print("KEY SETS == v1.23.2 schema (tools/schema-color-keys.json): PASS")
 
 if __name__ == "__main__":
     main()

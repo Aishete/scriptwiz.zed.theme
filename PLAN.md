@@ -36,6 +36,9 @@ pick → build → install → verify).
 | terminal ANSI | closed-palette collapse: `black #0d0d1f · bright_black #59596d · red/magenta/yellow #cb3d96 · green #9dc34f · blue/cyan #446f84 · white #c1c1c5` (brights = normals per kitty law; dims = 50% blend to bg) | **kitty mocha 16 verbatim** (`#45475A…#A6ADC8`, brights=normals per his conf) | magi collapse: `red #ff0000 · green #997a00 · yellow #ffd700 · blue/magenta #663399 · cyan #997a00 · white #e0e0e0` |
 | diagnostics | error `#cb3d96` · warning `#92b159` · success/info/accent greens | error `#f38ba8` · warning `#f9e2af` · success `#a6e3a1` (mocha ecosystem states; UI interaction stays site-green) | error `#ff0000` · warning `#ffd700` · success/created `#997a00` |
 | **git blame** (gutter + inline + FileGit icon) | `#9dc34f` accent | `#9dc34f` accent (green, same as other variants — the mocha-gray default was the complaint) | `#ff0000` accent (follows the NERV highlight) |
+| **git tree entries** (old panel + git panel/diff) | added `#9dc34f` · modified `#92b159` · deleted `#cb3d96` · **renamed** `#446f84` (info blue) · **ignored** `#59596d` · **conflict** `#92b159` | added `#a6e3a1` · modified `#f9e2af` · deleted `#f38ba8` · named/info mocha hues · conflict mocha yellow | magi ecosystem colors for R/I/U entries |
+| **vim mode pills** (status bar, vim_mode) | NORMAL green bg · INSERT blue bg · VISUAL/LINE/BLOCK pink bg · REPLACE warn bg · YANK accent@1f tint · fg = bar tone | same mapping, mocha tones | NERV: NORMAL red / INSERT purple / VISUAL pink-red / REPLACE gold |
+| **panel trees** (project/outline/git panel guides) | `panel.indent_guide` = dim border · active/hover brighten toward text | border-variant tone on mocha | dim red lines |
 | ↳ mechanism | `status.hint` → accent | verified: `git_ui/blame_ui.rs` paints gutter (line 209) + inline (line 293) blame with `.text_color(status().hint)`; syntax `hint` stays muted so hint-severity diagnostics don't shift |
 | git | created `#9dc34f` · modified `#92b159` · deleted `#cb3d96` | created `#a6e3a1` · modified `#f9e2af` · deleted `#f38ba8` | created `#997a00` · modified `#ffd700` · deleted `#ff6666` |
 | borders | `#3a3a55` (blueDim) · focused `#9dc34f` · selected `#446f84` | `#3a3a55` on mocha → `#585b70`-family blend · focused `#9dc34f` · selected `#446f84` | `#1a0000` · focused `#ff0000` · selected `#663399` |
@@ -129,11 +132,17 @@ Preview fonts are SETTINGS, not theme: `"markdown_preview": {"font_size", "font_
 
 ## 3. Zed key mapping strategy
 
-- Emit the FULL key set of v1.23.2 `one.json` (140 UI + 46 syntax) per theme —
-  complete coverage, nothing left to theme defaults silently. NO extra keys:
-  `tab.hover_background` / `tab.border` / `terminal.ansi.dim_bright_*` are NOT
-  in the `settings_content` `ThemeStyleContent` schema (verified in source) —
-  one.json-identical key sets only.
+- **Schema-complete**: emit EVERY color key the v1.23.2 `ThemeColorsContent` +
+  `StatusColorsContent` define — 189 keys, canonical list committed as
+  `tools/schema-color-keys.json` (extracted from serde renames in
+  settings_content/src/theme.rs; legacy bare aliases excluded). one.json's set
+  is a subset Zed still ships as data, not the schema ceiling. Deprecated
+  aliases + the one.json-omitted-then-found keys are all covered now.
+
+- Emit the FULL syntax set of v1.23.2 `one.json` (46) per theme — complete
+  coverage, nothing left to theme defaults silently. NO extra keys beyond the
+  schema: `tab.hover_background` / `tab.border` / `terminal.ansi.dim_bright_*`
+  do NOT exist in `settings_content` (verified in source).
 - Elevation gradient (One Dark law, `background` lightest → editor darkest):
   A `#101024` / B `#181825` / C `#0a0a0a` chrome → panels A `#0d0d1f` B `#181825`
   C `#0a0a0a` → editor A `#0a0a17` B `#1e1e2e` C `#000000`. Active tab always
@@ -178,6 +187,15 @@ Preview fonts are SETTINGS, not theme: `"markdown_preview": {"font_size", "font_
 - `tools/verify.py` replicates the builder validator + checks key-set equality
   and hex sanity; `tools/build.py` emits per-theme files AND
   `themes/scriptwiz-family.json` (the builder-importable artifact).
+- **Dev extension runtime** (installed 2026-10-16):
+  `~/.local/share/zed/extensions/installed/scriptwiz-themes` is a SYMLINK to
+  this repo — files live-sync, but Zed parses themes into its registry once at
+  install/rebuild time. Every rebuild here needs `extensions: rebuild dev
+  extension` (palette command, verified in his binary) or a Zed restart to
+  reach the running editor. Optional pin:
+  `"markdown_preview": {"theme": {"mode":"dark","dark":"Scriptwis"}}`
+  renders the preview from a fixed theme instead of the active one
+  (md preview resolves: settings pin → else active theme).
 
 ## 5. File map
 
