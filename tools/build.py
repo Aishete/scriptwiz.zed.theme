@@ -255,7 +255,9 @@ def main():
     if problems:
         print("PROBLEMS:"); [print(" -", p) for p in problems]; sys.exit(1)
     fam = {"name": "Scriptwiz", "author": pal["meta"]["author"], "themes": family_themes}
-    fout = ROOT / "themes" / "scriptwiz-family.json"
+    bdir = ROOT / "builder"
+    bdir.mkdir(exist_ok=True)
+    fout = bdir / "scriptwiz-family.json"   # NOT in themes/: the extension must not double-load it
     json.dump(fam, open(fout, "w"), indent=2)
     data = fout.read_bytes()
     print(f"{fout.relative_to(ROOT)}  {len(data):6d}B  sha256 {hashlib.sha256(data).hexdigest()[:16]}…  "

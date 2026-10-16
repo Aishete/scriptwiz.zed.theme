@@ -7,7 +7,7 @@
    ThemeFamilyContent/ThemeContent/ThemeStyleContent) via key-set equality
    against tools/one-v1.23.2.json + schema-derived key blacklist.
 """
-import json, hashlib, sys, re
+import json, hashlib, sys, re, tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -45,8 +45,39 @@ def builder_eu(data):
             return f"Invalid theme JSON: Theme at index {i} missing or invalid 'style' field"
     return None  # PASS
 
+def check_manifest():
+    """extension.toml vs crates/extension/src/extension_manifest.rs (v1.23.2).
+    Required: id, name, version, schema_version. packaging iterates
+    manifest.themes, so listed paths MUST exist."""
+    MANIFEST_KEYS = {"id", "name", "version", "schema_version", "description",
+        "repository", "authors", "lib", "themes", "icon_themes", "languages",
+        "grammars", "language_servers", "context_servers", "slash_commands",
+        "snippets", "capabilities", "debug_adapters", "debug_locators",
+        "language_model_providers"}
+    path = ROOT / "extension.toml"
+    m = tomllib.load(open(path, "rb"))
+    problems = []
+    for k in ("id", "name", "version", "schema_version"):
+        if k not in m: problems.append(f"manifest missing required field {k!r}")
+    unknown = set(m.keys()) - MANIFEST_KEYS
+    if unknown: problems.append(f"manifest unknown fields: {sorted(unknown)}")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", m.get("id", "")):
+        problems.append(f"manifest id not lowercase-dash: {m.get('id')!r}")
+    if not isinstance(m.get("schema_version"), int):
+        problems.append("manifest schema_version must be an int (toml integer)")
+    for rel in m.get("themes", []):
+        if not (ROOT / rel).is_file():
+            problems.append(f"manifest themes path missing: {rel}")
+    listed = set(m.get("themes", []))
+    on_disk = {f"themes/{f.name}" for f in (ROOT / "themes").glob("*.json")}
+    if listed != on_disk:
+        problems.append(f"manifest themes != themes/ on disk: listed {sorted(listed)}, disk {sorted(on_disk)}")
+    print(f"{'PASS' if not problems else 'FAIL'}  extension.toml  id={m.get('id')}  themes={len(m.get('themes', []))}")
+    return problems
+
 problems = []
-for f in sorted((ROOT / "themes").glob("*.json")):
+problems += check_manifest()
+for f in sorted((ROOT / "themes").glob("*.json")) + sorted((ROOT / "builder").glob("*.json")):
     raw = f.read_bytes()
     try:
         doc = json.loads(raw)

@@ -128,13 +128,38 @@ if wanted).
 
 ## 5. File map
 
-- `palettes.json` — single source of truth for all three variant tables
-- `tools/build.py` — palettes.json → Zed JSON (derives dims/blends/alphas)
-- `tools/one-v1.23.2.json` — committed key-set reference (his exact Zed version)
-- `tools/verify.py` — builder-validator replication + key-set equality + hex
-  sanity + sha table
-- `preview/index.html` — the pick gate (self-contained, no CDN/fonts)
-- `themes/scriptwiz.json` / `scriptwiz-mocha.json` / `scriptwiz-magi.json` —
-  local-install files (`~/.config/zed/themes/`)
-- `themes/scriptwiz-family.json` — all three in one family; drag THIS into
-  zed.dev/theme-builder
+```
+zed-theme/
+├── extension.toml               ← extension manifest (root, ExtensionManifest schema)
+├── palettes.json                ← single source of truth for all three variant tables
+├── PLAN.md
+├── themes/                      ← exactly what the manifest lists / what installs
+│   ├── scriptwiz.json
+│   ├── scriptwiz-mocha.json
+│   └── scriptwiz-magi.json
+├── builder/
+│   └── scriptwiz-family.json    ← all three in one family; drag into zed.dev/theme-builder
+│                                  (kept OUT of themes/ so packaging never double-loads)
+├── preview/
+│   └── index.html               ← the pick gate (self-contained, no CDN/fonts)
+└── tools/
+    ├── build.py                 ← palettes.json → Zed JSON (derives dims/blends/alphas)
+    ├── one-v1.23.2.json         ← committed key-set reference (his exact Zed version)
+    └── verify.py                ← manifest schema + builder validator + key sets + hex + sha
+```
+
+## 5b. Extension manifest contract (v1.23.2, crates/extension/src/extension_manifest.rs)
+
+`extension.toml` = `ExtensionManifest`. Required: `id` (lowercase-dash),
+`name`, `version`, `schema_version` (TOML int, current = 1). Packaging walks
+`manifest.themes` literally — themes are NEVER auto-discovered, so verify.py
+asserts manifest.themes == themes/ on disk. Canonical reference: the installed
+nvim-nightfox extension.toml on this machine.
+
+Install paths at build time (he picks ONE — names collide in the registry if
+both are used):
+1. **Dev extension**: `zed: extensions` → Install Dev Extension → select
+   `~/projects/zed-theme` (manifest route; updates land on rebuild; rollback =
+   uninstall, keep `Duskfox - blurred`).
+2. **Local themes**: copy `themes/*.json` → `~/.config/zed/themes/` with sha256
+   compare (skill-law route).
