@@ -206,21 +206,19 @@ def build_theme(v, pal):
     st["editor.diff_hunk.deleted.hollow_background"] = rgb_alpha(deleted, 0x0F)
     st["editor.diff_hunk.deleted.hollow_border"]     = rgb_alpha(deleted, 0x5C)
     st["editor.document_highlight.bracket_background"] = hover2x
-    # indent guides carry the prompt/accent grammar so nesting levels read
-    # scriptwiz: guide = prompt tone (the site's structural-mark green),
-    # active (the level under the cursor) = full accent
-    st["editor.indent_guide"]        = base["prompt"]
+    # indent guides REVERSED per his call: base lines neutral gray (structure),
+    # green is reserved for state — the active level under the cursor = accent
+    st["editor.indent_guide"]        = mix(text, editor, 0.5)
     st["editor.indent_guide_active"] = accent
     st["minimap.thumb.background"]        = rgb_alpha(text, 0x4C)
     st["minimap.thumb.hover_background"]  = rgb_alpha(text, 0x80)
     st["minimap.thumb.active_background"] = rgb_alpha(accent, 0x8C)
     st["minimap.thumb.border"]            = hover2x
     st["pane_group.border"]               = mix(base["border"], editor, 0.5)
-    # panel trees (project/outline/git): full prompt tone, accent on active —
-    # he reported the earlier 85%-dulled base as "not green"
-    st["panel.indent_guide"]        = base["prompt"]
+    # panel trees: neutral gray base, green on hover and selected branch
+    st["panel.indent_guide"]        = mix(text, editor, 0.5)
     st["panel.indent_guide_active"] = accent
-    st["panel.indent_guide_hover"]  = mix(base["prompt"], text, 0.25)
+    st["panel.indent_guide_hover"]  = accent
     st["panel.overlay_background"]  = rgb_alpha(bar, 0xE3)
     st["panel.overlay_hover"]       = hover
     st["scrollbar.thumb.active_background"] = rgb_alpha(text, 0x80)
