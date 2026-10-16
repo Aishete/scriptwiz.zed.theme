@@ -74,6 +74,29 @@ no longer exists in v1.23.2 settings). Ladder ported verbatim by role:
 solid variants; Nightfox ships -opaque/-blurred pairs — we can emit pairs too
 if wanted).
 
+## 2c. Style capability matrix (v1.23.2, verified in source 2026-10-16)
+
+| design-language element | status | evidence / where |
+|---|---|---|
+| border color grammar (dim/green/blue/pink) | ✅ theme JSON | `border.*` keys (§2 table) |
+| **dashed** lines | ❌ not reachable in stock Zed | gpui HAS the primitive (`border_style: BorderStyle`, paints through `paint_quad` — gpui/src/style.rs:285,736) but `ThemeStyleContent` + ALL settings_content files (editor/terminal/workspace/title_bar/project: 4639 lines) expose ZERO border-style keys. Stock Zed only draws dashes where elements hardcode them. A source patch could re-style chrome — separate exercise, not a theme |
+| window blur | ✅ theme JSON | `background.appearance` + alpha ladder (§2b) |
+| fonts (Caelusevka) | ✅ his settings | ui/buffer/agent font_family already set by him |
+| line height ≈ site 1.65 | ✅ built-in default | `BufferLineHeight::Comfortable = 1.618` is Zed's default |
+| vim NORMAL hollow cursor | ✅ built-in | vim_mode already set by him |
+| wrap guides on / soft_wrap | ✅ his settings | `show_wrap_guides: true`, `soft_wrap: editor_width` already |
+| **focused-pane accent frame** | ✅ TOP-LEVEL SETTING | `active_pane_modifiers: {"border_size": 1.0}` → 1px inset frame in `pane.focused_border` (= accent) — the closest Zed gets to the gallery's green frame. Key path verified on the all-settings page + 4 string hits in his binary |
+| inactive-pane dim | ✅ setting, opt-out while blurred | `active_pane_modifiers.inactive_opacity` (skip: stacking with blur muddies) |
+| centered tabs | ✅ built-in | — |
+| `$`-command chrome headers | ❌ | panel headers are code-drawn strings |
+| traffic dots | ❌ | system/Wayland titlebar owns that chrome |
+| panel corner radius | ❌ | `CLIENT_SIDE_DECORATION_ROUNDING` is a compiled constant |
+
+Settings patch queued for install time (needs his pick first):
+```json
+"active_pane_modifiers": { "border_size": 1.0 }
+```
+
 ## 3. Zed key mapping strategy
 
 - Emit the FULL key set of v1.23.2 `one.json` (140 UI + 46 syntax) per theme —
