@@ -265,27 +265,34 @@ def build_theme(v, pal):
     return {"name": pal["name"], "appearance": "dark", "style": st}, players
 
 def apply_appearance(st, appearance):
-    """Alpha ladder ported from 'Duskfox - blurred' (nvim-nightfox ext, the theme
-    he runs today): view surfaces 00, chrome/bars E3, tab bands 57, active line
-    36. Border/separator lines stay crisp; elevated_surface stays opaque so
-    modals occlude. Blurred twin gets the ladder + key; opaque twin gets solid
-    colors + an explicit "opaque" key (Nightfox-family convention)."""
-    st["background.appearance"] = appearance
+    """Three appearance levels (alphas ported/adapted from 'Duskfox - blurred',
+    nvim-nightfox ext):
+      blurred  — wallpaper lives here: views 00 / chrome E3 / tab bands 57 / line 36
+      hazy     — a wash, less blur: views 8C / chrome E3 / tab bands 8C / line 57
+      opaque   — solid colors
+    Border lines stay crisp and elevated_surface stays opaque in every level.
+    Note: hazy declares "blurred" (the Zed enum has no hazy) — the level is the
+    alpha ladder, not the enum."""
+    st["background.appearance"] = "blurred" if appearance == "hazy" else appearance
     if appearance == "opaque":
         return
     def a(color, alpha):
         return "%s%02x" % (color[:7], alpha)
+    if appearance == "hazy":
+        views, tabs, line = (0x8C, 0x8C, 0x57)
+    else:
+        views, tabs, line = (0x00, 0x57, 0x36)
     for k in ("editor.background", "editor.gutter.background",
               "terminal.background", "panel.background",
               "terminal.ansi.background"):
-        st[k] = a(st[k], 0x00)
+        st[k] = a(st[k], views)
     for k in ("background", "title_bar.background", "status_bar.background",
               "surface.background", "editor.subheader.background"):
         st[k] = a(st[k], 0xE3)
     for k in ("tab_bar.background", "tab.inactive_background",
               "tab.active_background", "toolbar.background"):
-        st[k] = a(st[k], 0x57)
-    st["editor.active_line.background"] = a(st["editor.active_line.background"], 0x36)
+        st[k] = a(st[k], tabs)
+    st["editor.active_line.background"] = a(st["editor.active_line.background"], line)
 
 
 def main():
@@ -296,9 +303,10 @@ def main():
               "version_control_conflict_theirs_background"}
     ALLOWED_UI = (SCHEMA_KEYS - LEGACY) | {"players", "accents"}
     for vid, v in pal["variants"].items():
-        # Opaque/blurred twins per variant (Nightfox-family convention). The plain
-        # name keeps the blurred look (his settings.dark = "Scriptwis" stays valid).
-        for appearance, suffix in ((v.get("window", {}).get("appearance", "opaque"), ""),
+        # Appearance family per variant (Nightfox convention): plain = blurred
+        # ladder (his settings.dark = "Scriptwis" stays valid), plus hazy and
+        # opaque twins.
+        for appearance, suffix in (("blurred", ""), ("hazy", " - hazy"),
                                    ("opaque", " - opaque")):
             theme, players = build_theme(vid, v)
             theme["style"]["players"] = players

@@ -5,21 +5,27 @@ Terminal-native dark themes for [Zed](https://zed.dev) — built from the
 the accent, dashed-law colors on solid lines, and an editor that reads like a
 shell session.
 
-Three variants, each with an `- opaque` twin (six themes total):
+Three variants × three appearance levels — nine themes total:
 
-| Theme | Soul | Editor bg |
+| Variant | Soul | |
 |---|---|---|
-| `Scriptwis` | the site, pure — site tokens, blur ladder | `#0a0a17` (translucent) |
-| `Scriptwis - opaque` | same palette, solid surfaces | `#0a0a17` |
-| `Scriptwis Mocha` | scriptwiz grammar on your kitty's Catppuccin Mocha base | `#1e1e2e` |
-| `Scriptwis Mocha - opaque` | solid twin | `#1e1e2e` |
-| `Scriptwis Magi` | NERV control room — red on black, zero-softness voice | `#000000` (translucent) |
-| `Scriptwis Magi - opaque` | solid twin | `#000000` |
+| `Scriptwis` | the site, pure — site tokens | |
+| `Scriptwis Mocha` | scriptwiz grammar on your kitty's Catppuccin Mocha base | |
+| `Scriptwis Magi` | NERV control room — red on black | |
 
-The blurred pair bleeds the wallpaper through (alpha ladder ported from
-`Duskfox - blurred`); the opaque pair is the readable-popups escape hatch —
-Zed intentionally blanks popup backgrounds on non-opaque themes, so flip via
-the theme selector (`ctrl-k ctrl-t`) when reading docs.
+Every variant ships in `blurred`, `hazy`, and `opaque` flavors
+(`Scriptwis`, `Scriptwis - hazy`, `Scriptwis - opaque`, …):
+
+| flavor | what you see | view-surface alpha | active line | tab bands | chrome |
+|---|---|---|---|---|---|
+| blurred | wallpaper lives inside the editor | `00` | `36` | `57` | `E3` |
+| hazy | a readable wash over the wallpaper — less blur | `8C` | `57` | `8C` | `E3` |
+| opaque | solid surfaces | solid | solid | solid | solid |
+
+Popups note: Zed intentionally blanks popup backgrounds on any non-opaque
+theme, so reach for the `- opaque` twin (or the hazy wash + `git blame`
+readability) when docs get dense. Flavor switching is instant via the theme
+selector (`ctrl-k ctrl-t`).
 
 ## Install
 
