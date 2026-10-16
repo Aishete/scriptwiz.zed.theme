@@ -1,4 +1,4 @@
-# Scriptwis Themes
+# Scriptwiz Themes
 
 Terminal-native dark themes for [Zed](https://zed.dev) — built from the
 [scriptwiz](https://scriptwiz.net) design language: the green-of-a-prompt as
@@ -9,9 +9,9 @@ Three variants × three appearance levels — nine themes total:
 
 | Variant | Soul | |
 |---|---|---|
-| `Scriptwis` | the site, pure — site tokens | |
-| `Scriptwis Mocha` | scriptwiz grammar on your kitty's Catppuccin Mocha base | |
-| `Scriptwis Magi` | NERV control room — red on black | |
+| `Scriptwiz` | the site, pure — site tokens | |
+| `Scriptwiz Mocha` | scriptwiz grammar on your kitty's Catppuccin Mocha base | |
+| `Scriptwiz Magi` | NERV control room — red on black | |
 
 Plain names are **transparent**: same see-through ladder, but with
 `background.appearance: "transparent"` — wallpaper shows through **sharp**,

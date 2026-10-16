@@ -313,7 +313,7 @@ def main():
     ALLOWED_UI = (SCHEMA_KEYS - LEGACY) | {"players", "accents"}
     for vid, v in pal["variants"].items():
         # Appearance family per variant: plain = the variant's window appearance
-        # (transparent — zero blur, his settings.dark = "Scriptwis" stays valid),
+        # (transparent — zero blur, his settings.dark = "Scriptwiz" stays valid),
         # plus hazy and opaque twins.
         for appearance, suffix in (("light", " [Light]"),
                                    (v.get("window", {}).get("appearance", "transparent"), ""),
