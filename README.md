@@ -5,7 +5,7 @@ Terminal-native dark themes for [Zed](https://zed.dev) — built from the
 the accent, dashed-law colors on solid lines, and an editor that reads like a
 shell session.
 
-Three variants × three appearance levels — nine themes total:
+Three variants × four appearance levels — twelve themes total:
 
 | Variant | Soul | |
 |---|---|---|
@@ -13,19 +13,22 @@ Three variants × three appearance levels — nine themes total:
 | `Scriptwis Mocha` | scriptwiz grammar on your kitty's Catppuccin Mocha base | |
 | `Scriptwis Magi` | NERV control room — red on black | |
 
-Every variant ships in `blurred`, `hazy`, and `opaque` flavors
-(`Scriptwis`, `Scriptwis - hazy`, `Scriptwis - opaque`, …):
+Every variant ships in `blurred`, `transparent`, `hazy`, and `opaque` flavors
+(`Scriptwis`, `Scriptwis - transparent`, `Scriptwis - hazy`,
+`Scriptwis - opaque`, …):
 
-| flavor | what you see | view-surface alpha | active line | tab bands | chrome |
-|---|---|---|---|---|---|
-| blurred | wallpaper lives inside the editor | `00` | `36` | `57` | `E3` |
-| hazy | a readable wash over the wallpaper — less blur | `8C` | `57` | `8C` | `E3` |
-| opaque | solid surfaces | solid | solid | solid | solid |
+| flavor | what you see | view-surface alpha | active line | tab bands | chrome | enum |
+|---|---|---|---|---|---|---|
+| blurred | wallpaper + compositor blur | `00` | `36` | `57` | `E3` | blurred |
+| transparent | wallpaper sharp — zero blur requested | `00` | `36` | `57` | `E3` | transparent |
+| hazy | a readable wash — less blur | `8C` | `57` | `8C` | `E3` | blurred |
+| opaque | solid surfaces | solid | solid | solid | solid | opaque |
 
-Popups note: Zed intentionally blanks popup backgrounds on any non-opaque
-theme, so reach for the `- opaque` twin (or the hazy wash + `git blame`
-readability) when docs get dense. Flavor switching is instant via the theme
-selector (`ctrl-k ctrl-t`).
+Hyprland note: if a `blur` window rule matches the `zeditor` class, the
+compositor may still blur translucent windows — that rule lives in your
+hyprland config, not the theme. Popups note: Zed blanks popup backgrounds on
+any non-opaque theme, so the `- opaque` twin is the readable-popups escape
+hatch. Flavor switching is instant via the theme selector (`ctrl-k ctrl-t`).
 
 ## Install
 

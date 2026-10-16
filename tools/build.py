@@ -265,23 +265,25 @@ def build_theme(v, pal):
     return {"name": pal["name"], "appearance": "dark", "style": st}, players
 
 def apply_appearance(st, appearance):
-    """Three appearance levels (alphas ported/adapted from 'Duskfox - blurred',
+    """Four appearance levels (alphas ported/adapted from 'Duskfox - blurred',
     nvim-nightfox ext):
-      blurred  — wallpaper lives here: views 00 / chrome E3 / tab bands 57 / line 36
-      hazy     — a wash, less blur: views 8C / chrome E3 / tab bands 8C / line 57
-      opaque   — solid colors
+      blurred     — wallpaper lives here, compositor blur: views 00 / chrome E3 / bands 57 / line 36
+      transparent — same ladder, ZERO blur request: wallpaper shows sharp
+      hazy        — a wash, less blur: views 8C / chrome E3 / tab bands 8C / line 57
+      opaque      — solid colors
     Border lines stay crisp and elevated_surface stays opaque in every level.
-    Note: hazy declares "blurred" (the Zed enum has no hazy) — the level is the
-    alpha ladder, not the enum."""
-    st["background.appearance"] = "blurred" if appearance == "hazy" else appearance
+    Schema note: hazy declares the "blurred" enum (no hazy in Zed); transparent
+    declares "transparent"."""
+    LADDER = {"blurred": (0x00, 0x57, 0x36, "blurred"),
+              "transparent": (0x00, 0x57, 0x36, "transparent"),
+              "hazy": (0x8C, 0x8C, 0x57, "blurred"),
+              "opaque": (None, None, None, "opaque")}
+    views, tabs, line, enum_key = LADDER[appearance]
+    st["background.appearance"] = enum_key
     if appearance == "opaque":
         return
     def a(color, alpha):
         return "%s%02x" % (color[:7], alpha)
-    if appearance == "hazy":
-        views, tabs, line = (0x8C, 0x8C, 0x57)
-    else:
-        views, tabs, line = (0x00, 0x57, 0x36)
     for k in ("editor.background", "editor.gutter.background",
               "terminal.background", "panel.background",
               "terminal.ansi.background"):
@@ -306,8 +308,8 @@ def main():
         # Appearance family per variant (Nightfox convention): plain = blurred
         # ladder (his settings.dark = "Scriptwis" stays valid), plus hazy and
         # opaque twins.
-        for appearance, suffix in (("blurred", ""), ("hazy", " - hazy"),
-                                   ("opaque", " - opaque")):
+        for appearance, suffix in (("blurred", ""), ("transparent", " - transparent"),
+                                   ("hazy", " - hazy"), ("opaque", " - opaque")):
             theme, players = build_theme(vid, v)
             theme["style"]["players"] = players
             theme["style"]["accents"] = v.get("accents", [v["base"]["accent"]])
